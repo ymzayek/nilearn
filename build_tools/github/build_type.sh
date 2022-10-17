@@ -1,14 +1,11 @@
-#!/bin/bash -elf
+#!/bin/bash -ef
 
 if [ "$GITHUB_REF_NAME" == "main" ] || [[ $(cat gitlog.txt) == *"[circle full]"* ]]; then
     echo "Doing a full build";
     echo html-strict > build.txt;
 else
     echo "Doing a partial build";
-    echo "$GITHUB_REF_NAME";
-    FILENAMES=$(git diff --name-only $(git merge-base $GITHUB_REF_NAME upstream/main) $GITHUB_REF_NAME);
-    echo "$GITHUB_REF_NAME";
-    echo "$FILENAMES";
+    FILENAMES=$(git diff --name-only $(git merge-base $GITHUB_HEAD_REF upstream/main) $GITHUB_HEAD_REF);
     echo FILENAMES="$FILENAMES";
     for FILENAME in $FILENAMES; do
         if [[ `expr match $FILENAME "\(examples\)/.*plot_.*\.py"` ]]; then
