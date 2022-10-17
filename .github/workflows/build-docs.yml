@@ -64,6 +64,8 @@ jobs:
         with:
           auto-activate-base: true
           activate-environment: ""
+          miniconda-version: "latest"
+          channels: conda-forge,defaults
       - name: Install apt packages
         run: |
           ./build_tools/github/build_dependencies_apt.sh
