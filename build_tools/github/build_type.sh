@@ -4,7 +4,7 @@ if [ "$GITHUB_REF_NAME" == "main" ] || [[ $(cat gitlog.txt) == *"[circle full]"*
     echo "Doing a full build";
     echo html-strict > build.txt;
 else
-    FILENAMES=$(git diff --name-only $(git merge-base origin/$GITHUB_HEAD_REF upstream/main) origin/$GITHUB_HEAD_REF);
+    FILENAMES=$(git diff --name-only $(git merge-base $GITHUB_HEAD_REF upstream/main) $GITHUB_HEAD_REF);
     echo FILENAMES="$FILENAMES";
     for FILENAME in $FILENAMES; do
         if [[ `expr match $FILENAME "\(examples\)/.*plot_.*\.py"` ]]; then
