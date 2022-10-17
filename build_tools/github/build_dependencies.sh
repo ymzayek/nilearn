@@ -1,6 +1,5 @@
 #!/bin/bash -ef
 
-conda init bash
 echo "conda version = $(conda --version)"
 conda create -n testenv
 conda install -n testenv -yq python=3.8
