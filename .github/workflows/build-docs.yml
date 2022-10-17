@@ -31,7 +31,7 @@ jobs:
       - name: Complete checkout
         run: |
           if ! git remote -v | grep upstream; then
-            git remote add upstream https://github.com/nilearn/nilearn.git
+            git remote add upstream https://github.com/ymzayek/nilearn.git
           fi
           git fetch upstream
       - name: Save source cache
