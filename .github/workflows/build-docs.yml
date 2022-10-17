@@ -13,7 +13,7 @@ jobs:
   build_docs:
     # This prevents this workflow from running on a fork.
     # To test this workflow on a fork, uncomment the following line.
-    if: github.repository == 'nilearn/nilearn'
+    if: github.repository == 'ymzayek/nilearn'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -68,6 +68,7 @@ jobs:
         run: |
           ./build_tools/github/build_dependencies_apt.sh
       - name: Install packages in conda env
+        shell: bash -el {0}
         run: |
           ./build_tools/github/build_dependencies.sh
       - name: Find build type
