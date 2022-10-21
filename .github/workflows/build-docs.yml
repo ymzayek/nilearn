@@ -96,7 +96,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/nilearn_data
-          key: data-cache-${{ hashFiles("week_num") }}
+          key: data-cache-${{ hashFiles("**/week_num") }}
       - name: Build docs
         shell: bash -el {0}
         run: |
@@ -114,7 +114,8 @@ jobs:
         run: |
           date +%U > week_num;
       - name: Save data cache
+        if: steps.cache-primes.outputs.cache-hit != 'true'
         uses: actions/cache@v3
         with:
           path: ~/nilearn_data
-          key: data-cache-${{ hashFiles("week_num") }}
+          key: data-cache-${{ hashFiles("**/week_num") }}
