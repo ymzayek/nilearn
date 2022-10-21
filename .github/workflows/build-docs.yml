@@ -226,6 +226,8 @@ jobs:
       - name: Install apt packages
         run: |
           ./build_tools/github/build_dependencies_apt.sh
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb
       - name: Install packages in conda env
         shell: bash -el {0}
         run: |
