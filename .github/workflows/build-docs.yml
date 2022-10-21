@@ -7,7 +7,7 @@ on:
       - "main"
   pull_request:
     branches:
-      - '*'
+      - "*"
   schedule:
     - cron: "0 6 * * *"
 
@@ -68,8 +68,8 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2
         with:
           auto-activate-base: true
-          activate-environment: ""
-          miniconda-version: "latest"
+          activate-environment: ''
+          miniconda-version: 'latest'
           channels: conda-forge,defaults
       - name: Install apt packages
         run: |
@@ -90,13 +90,14 @@ jobs:
           if [[ $(cat restore.txt) == "true" ]]; then
               date +%U > week_num;
           else
-              echo 'missing' > week_num;
+              echo "missing" > week_num;
           fi
       - name: Restore data cache
+        id: restore-cache
         uses: actions/cache@v3
         with:
           path: ~/nilearn_data
-          key: data-cache-${{ hashFiles("**/week_num") }}
+          key: data-cache-${{ hashFiles('**/week_num**') }}
       - name: Build docs
         shell: bash -el {0}
         run: |
@@ -114,8 +115,8 @@ jobs:
         run: |
           date +%U > week_num;
       - name: Save data cache
-        if: steps.cache-primes.outputs.cache-hit != 'true'
+        if: steps.restore-cache.outputs.cache-hit != 'true'
         uses: actions/cache@v3
         with:
           path: ~/nilearn_data
-          key: data-cache-${{ hashFiles("**/week_num") }}
+          key: data-cache-${{ hashFiles('**/week_num**') }}
