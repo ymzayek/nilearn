@@ -12,11 +12,53 @@ on:
     - cron: "0 6 * * *"
 
 jobs:
+  restore_data:
+    # This prevents this workflow from running on a fork.
+    # To test this workflow on a fork, uncomment the following line.
+    if: github.repository == 'ymzayek/nilearn'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout nilearn
+        uses: actions/checkout@v3
+      - name: Determine force download
+        run: |
+          commit_msg=$(git log -2 --format=oneline);
+          echo $commit_msg;
+          if [[ $commit_msg == *"[force download]"* ]]; then
+            echo "All datasets will be downloaded as requested.";
+            touch restore.txt;
+          else
+            echo "Data cache will be used if available.";
+            echo "true" | tee restore.txt;
+          fi
+      - name: Get cache key
+        run: |
+          if [[ $(cat restore.txt) == "true" ]]; then
+              date +%U > week_num;
+          else
+              echo "missing" > week_num;
+          fi
+      - name: Save data cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/nilearn_data/basc_multiscale_2015 # <  1 MB
+            ~/nilearn_data/destrieux_surface    # <  1 MB
+            ~/nilearn_data/difumo_atlases       # ~  4 MB
+            ~/nilearn_data/fsaverage            # ~ 28 MB
+            ~/nilearn_data/Megatrawls           # ~  9 MB
+            ~/nilearn_data/msdl_atlas           # ~ 21 MB
+            ~/nilearn_data/neurovault           # ~ 13 MB
+            ~/nilearn_data/pauli_2017           # ~  1 MB
+            ~/nilearn_data/yeo_2011             # ~  3 MB
+          key: v1-small-cache-${{ hashFiles('**/week_num**') }}
+
   build_docs:
     # This prevents this workflow from running on a fork.
     # To test this workflow on a fork, uncomment the following line.
     if: github.repository == 'ymzayek/nilearn'
     runs-on: ubuntu-latest
+    needs: restore_data
     defaults:
       run:
         shell: bash
@@ -53,17 +95,17 @@ jobs:
               echo "Merging $(cat merge.txt)";
               git pull --ff-only upstream "refs/pull/$(cat merge.txt)";
           fi
-      - name: Determine force download
-        run: |
-          commit_msg=$(git log -2 --format=oneline);
-          echo $commit_msg;
-          if [[ $commit_msg == *"[force download]"* ]]; then
-            echo "All datasets will be downloaded as requested.";
-            touch restore.txt;
-          else
-            echo "Data cache will be used if available.";
-            echo "true" | tee restore.txt;
-          fi
+#      - name: Determine force download
+#        run: |
+#          commit_msg=$(git log -2 --format=oneline);
+#          echo $commit_msg;
+#          if [[ $commit_msg == *"[force download]"* ]]; then
+#            echo "All datasets will be downloaded as requested.";
+#            touch restore.txt;
+#          else
+#            echo "Data cache will be used if available.";
+#            echo "true" | tee restore.txt;
+#          fi
       - name: Setup conda
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -85,19 +127,19 @@ jobs:
         run: |
           echo "PATTERN = $(cat pattern.txt)"
           echo "BUILD = $(cat build.txt)"
-      - name: Get cache key
-        run: |
-          if [[ $(cat restore.txt) == "true" ]]; then
-              date +%U > week_num;
-          else
-              echo "missing" > week_num;
-          fi
-      - name: Restore data cache
-        id: restore-cache
-        uses: actions/cache@v3
-        with:
-          path: ~/nilearn_data
-          key: data-cache-${{ hashFiles('**/week_num**') }}
+#      - name: Get cache key
+#        run: |
+#          if [[ $(cat restore.txt) == "true" ]]; then
+#              date +%U > week_num;
+#          else
+#              echo "missing" > week_num;
+#          fi
+#      - name: Restore data cache
+#        id: restore-cache
+#        uses: actions/cache@v3
+#        with:
+#          path: ~/nilearn_data
+#          key: data-cache-${{ hashFiles('**/week_num**') }}
       - name: Build docs
         shell: bash -el {0}
         run: |
@@ -111,12 +153,37 @@ jobs:
         with:
           name: doc
           path: doc/_build/html
+#      - name: Generate cache keys
+#        run: |
+#          date +%U > week_num;
+#      - name: Save data cache
+#        if: steps.restore-cache.outputs.cache-hit != 'true'
+#        uses: actions/cache@v3
+#        with:
+#          path: ~/nilearn_data
+#          key: data-cache-${{ hashFiles('**/week_num**') }}
+
+  save_data:
+    # This prevents this workflow from running on a fork.
+    # To test this workflow on a fork, uncomment the following line.
+    if: github.repository == 'ymzayek/nilearn'
+    runs-on: ubuntu-latest
+    needs: build_docs
+    steps:
       - name: Generate cache keys
         run: |
           date +%U > week_num;
       - name: Save data cache
-        if: steps.restore-cache.outputs.cache-hit != 'true'
         uses: actions/cache@v3
         with:
-          path: ~/nilearn_data
-          key: data-cache-${{ hashFiles('**/week_num**') }}
+          path: |
+            ~/nilearn_data/basc_multiscale_2015 # <  1 MB
+            ~/nilearn_data/destrieux_surface    # <  1 MB
+            ~/nilearn_data/difumo_atlases       # ~  4 MB
+            ~/nilearn_data/fsaverage            # ~ 28 MB
+            ~/nilearn_data/Megatrawls           # ~  9 MB
+            ~/nilearn_data/msdl_atlas           # ~ 21 MB
+            ~/nilearn_data/neurovault           # ~ 13 MB
+            ~/nilearn_data/pauli_2017           # ~  1 MB
+            ~/nilearn_data/yeo_2011             # ~  3 MB
+          key: v1-small-cache-${{ hashFiles('**/week_num**') }}
