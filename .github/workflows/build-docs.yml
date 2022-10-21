@@ -85,6 +85,18 @@ jobs:
         run: |
           echo "PATTERN = $(cat pattern.txt)"
           echo "BUILD = $(cat build.txt)"
+      - name: Get cache key
+        run: |
+          if [[ $(cat restore.txt) == "true" ]]; then
+              date +%U > week_num;
+          else
+              echo 'missing' > week_num;
+          fi
+      - name: Restore data cache
+        uses: actions/cache@v3
+        with:
+          path: ~/nilearn_data
+          key: data-cache-${{ hashFiles(week_num) }}
       - name: Build docs
         shell: bash -el {0}
         run: |
@@ -98,3 +110,11 @@ jobs:
         with:
           name: doc
           path: doc/_build/html
+      - name: Generate cache keys
+        run: |
+          date +%U > week_num;
+      - name: Save data cache
+        uses: actions/cache@v3
+        with:
+          path: ~/nilearn_data
+          key: data-cache-${{ hashFiles(week_num) }}
