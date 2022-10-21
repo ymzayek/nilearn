@@ -96,7 +96,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/nilearn_data
-          key: data-cache-${{ hashFiles(week_num) }}
+          key: data-cache-${{ hashFiles("week_num") }}
       - name: Build docs
         shell: bash -el {0}
         run: |
@@ -117,4 +117,4 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/nilearn_data
-          key: data-cache-${{ hashFiles(week_num) }}
+          key: data-cache-${{ hashFiles("week_num") }}
