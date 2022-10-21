@@ -63,6 +63,8 @@ jobs:
       run:
         shell: bash
     steps:
+      - uses: browser-actions/setup-chrome@latest
+      - run: chrome --version
       - name: Restore source cache
         uses: actions/cache@v3
         with:
