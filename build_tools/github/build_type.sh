@@ -2,7 +2,7 @@
 
 if [ "$GITHUB_REF_NAME" == "main" ] || [[ $(cat gitlog.txt) == *"[circle full]"* ]]; then
     echo "Doing a full build";
-    echo html > build.txt;
+    echo html-strict > build.txt;
 else
     FILENAMES=$(git diff --name-only $(git merge-base $GITHUB_SHA upstream/main) $GITHUB_SHA);
     echo FILENAMES="$FILENAMES";
