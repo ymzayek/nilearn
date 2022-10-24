@@ -253,8 +253,6 @@ jobs:
       - name: Build docs
         shell: bash -el {0}
         run: |
-          CHROMIUM_VERSION=$(/usr/bin/chromium --version | awk '{print $2}')
-          echo "CHROMIUM_VERSION=$CHROMIUM_VERSION" >> $GITHUB_ENV
           source activate testenv;
           echo "Conda active env = $CONDA_DEFAULT_ENV";
           cd doc;
