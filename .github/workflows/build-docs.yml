@@ -219,9 +219,10 @@ jobs:
         shell: bash -el {0}
         run: |
           ./build_tools/github/build_docs_dependencies.sh
-           conda install -c conda-forge firefox
       - name: Check Paths
+        shell: bash -el {0}
         run: |
+          source activate testenv
           echo $PATH
           firefox --version
           FIREFOX_PATH=$(which firefox)
