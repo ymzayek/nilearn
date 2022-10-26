@@ -218,7 +218,7 @@ jobs:
 #          fi
       - name: Install apt packages
         run: |
-          ./build_tools/github/build_dependencies_apt.sh
+          ./build_tools/github/build_docs_apt_dependencies.sh
       - name: Setup conda
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -229,7 +229,7 @@ jobs:
       - name: Install packages in conda env
         shell: bash -el {0}
         run: |
-          ./build_tools/github/build_dependencies.sh
+          ./build_tools/github/build_docs_dependencies.sh
 #      - name: Check if web browser is reachable by python
 #        run: |
 #          echo $PATH
