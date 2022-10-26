@@ -214,17 +214,18 @@ jobs:
           auto-activate-base: true
           activate-environment: ''
           miniconda-version: 'latest'
-          channels: defaults
+          channels: conda-forge
       - name: Install packages in conda env
         shell: bash -el {0}
         run: |
           ./build_tools/github/build_docs_dependencies.sh
-#      - name: Check if web browser is reachable by python
-#        run: |
-#          echo $PATH
-#          firefox --version
-#          which firefox
-#          python -c "import webbrowser; print(webbrowser.get('/usr/bin/firefox'))"
+      - name: Check if web browser is reachable by python
+        run: |
+          echo $PATH
+          firefox --version
+          which firefox
+          python -c "import webbrowser; print(webbrowser._browser.keys)"
+          python -c "import webbrowser; print(webbrowser.get(webbrowser._browser.keys[0]))"
       - name: Find build type
         run: |
           ./build_tools/github/build_type.sh
