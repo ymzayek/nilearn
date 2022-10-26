@@ -173,6 +173,8 @@ jobs:
       run:
         shell: bash
     steps:
+      - uses: browser-actions/setup-firefox@latest
+      - run: firefox --version
       - name: Restore source cache
         uses: actions/cache@v3
         with:
@@ -231,8 +233,8 @@ jobs:
           echo $PATH
           firefox --version
           which firefox
-          python -c "import plotly.io as pio; pio.renderers.default = 'firefox'"
-          python -c "import webbrowser; print(webbrowser.get().name)"
+          python -c "import webbrowser; print(webbrowser._browsers)"
+          python -c "import webbrowser; print(webbrowser.get('firefox'))"
       - name: Install packages in conda env
         shell: bash -el {0}
         run: |
