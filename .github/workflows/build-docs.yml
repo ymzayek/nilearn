@@ -219,20 +219,13 @@ jobs:
       - name: Install apt packages
         run: |
           ./build_tools/github/build_docs_apt_dependencies.sh
-#      - name: Setup conda
-#        uses: conda-incubator/setup-miniconda@v2
-#        with:
-#          auto-activate-base: true
-#          activate-environment: ''
-#          miniconda-version: 'latest'
-#          channels: conda-forge,defaults
       - name: Setup conda
-        run: |
-          wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh;
-          chmod +x ~/miniconda.sh && ~/miniconda.sh -b;
-          echo 'export PATH="$HOME/miniconda3/bin:$PATH"'  >> $GITHUB_ENV;
-          echo $GITHUB_ENV
-          echo $GITHUB_PATH
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-activate-base: true
+          activate-environment: ''
+          miniconda-version: 'latest'
+          channels: defaults
       - name: Install packages in conda env
         shell: bash -el {0}
         run: |
