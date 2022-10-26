@@ -223,8 +223,11 @@ jobs:
         run: |
           echo $PATH
           firefox --version
-          which firefox
-#          python -c "import webbrowser; print(webbrowser.get('/usr/bin/firefox'))"
+          FIREFOX_PATH=$(which firefox)
+          echo $GITHUB_PATH
+          echo $GITHUB_ENV
+          echo "$FIREFOX_PATH" >> $GITHUB_PATH
+          python -c "import webbrowser; print(webbrowser.get('/usr/bin/firefox'))"
       - name: Find build type
         run: |
           ./build_tools/github/build_type.sh
