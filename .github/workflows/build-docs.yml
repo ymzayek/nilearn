@@ -226,7 +226,7 @@ jobs:
       - name: Install apt packages
         run: |
           ./build_tools/github/build_dependencies_apt.sh
-      - name: Check chromium is reachable by python
+      - name: Check if web browser is reachable by python
         run: |
           python -c "import webbrowser; print(webbrowser.get().name)"
       - name: Install packages in conda env
