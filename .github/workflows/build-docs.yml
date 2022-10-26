@@ -230,7 +230,7 @@ jobs:
         shell: bash -el {0}
         run: |
           source activate testenv
-          python -c "import webbrowser; print(webbrowser.get())"
+          python -c "import webbrowser; print(webbrowser.get('/usr/share/miniconda3/envs/testenv/bin/firefox'))"
       - name: Find build type
         run: |
           ./build_tools/github/build_type.sh
