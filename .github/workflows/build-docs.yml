@@ -219,12 +219,18 @@ jobs:
         shell: bash -el {0}
         run: |
           ./build_tools/github/build_docs_dependencies.sh
-      - name: Check if web browser is reachable by python
+      - name: Check Paths
+        shell: bash -el {0}
         run: |
+          source activate testenv
           echo $PATH
           firefox --version
           which firefox
-#          python -c "import webbrowser; print(webbrowser.get('/usr/bin/firefox'))"
+      - name: Check if web browser is reachable by python
+        shell: bash -el {0}
+        run: |
+          source activate testenv
+          python -c "import webbrowser; print(webbrowser.get('/usr/bin/firefox'))"
       - name: Find build type
         run: |
           ./build_tools/github/build_type.sh
