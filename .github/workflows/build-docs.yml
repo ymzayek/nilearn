@@ -216,6 +216,9 @@ jobs:
 #            echo "Data cache will be used if available.";
 #            echo "true" | tee restore.txt;
 #          fi
+      - name: Install apt packages
+        run: |
+          ./build_tools/github/build_dependencies_apt.sh
       - name: Setup conda
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -223,19 +226,16 @@ jobs:
           activate-environment: ''
           miniconda-version: 'latest'
           channels: conda-forge,defaults
-      - name: Install apt packages
+      - name: Install packages in conda env
+        shell: bash -el {0}
         run: |
-          ./build_tools/github/build_dependencies_apt.sh
+          ./build_tools/github/build_dependencies.sh
       - name: Check if web browser is reachable by python
         run: |
           echo $PATH
           firefox --version
           which firefox
           python -c "import webbrowser; print(webbrowser.get('/usr/bin/firefox'))"
-      - name: Install packages in conda env
-        shell: bash -el {0}
-        run: |
-          ./build_tools/github/build_dependencies.sh
       - name: Find build type
         run: |
           ./build_tools/github/build_type.sh
