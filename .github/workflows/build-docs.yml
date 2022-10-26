@@ -257,10 +257,7 @@ jobs:
 #          path: ~/nilearn_data
 #          key: data-cache-${{ hashFiles('**/week_num**') }}
       - name: Build docs
-        shell: bash -el {0}
         run: |
-          echo "Conda active env = $CONDA_DEFAULT_ENV";
-          source activate testenv;
           echo "Conda active env = $CONDA_DEFAULT_ENV";
           cd doc;
           set -o pipefail;
