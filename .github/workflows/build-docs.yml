@@ -228,7 +228,9 @@ jobs:
           ./build_tools/github/build_dependencies_apt.sh
       - name: Check if web browser is reachable by python
         run: |
-          where firefox
+          echo $PATH
+          firefox --version
+          which firefox
           python -c "import webbrowser; print(webbrowser.get().name)"
       - name: Install packages in conda env
         shell: bash -el {0}
