@@ -231,6 +231,7 @@ jobs:
           echo $PATH
           firefox --version
           which firefox
+          python -c "import plotly.io as pio; pio.renderers.default = 'firefox'"
           python -c "import webbrowser; print(webbrowser.get().name)"
       - name: Install packages in conda env
         shell: bash -el {0}
