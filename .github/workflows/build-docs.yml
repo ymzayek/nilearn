@@ -219,17 +219,21 @@ jobs:
         shell: bash -el {0}
         run: |
           ./build_tools/github/build_docs_dependencies.sh
-      - name: Check paths
+           conda install -c conda-forge firefox
+      - name: Check Paths
         run: |
           echo $PATH
           firefox --version
           FIREFOX_PATH=$(which firefox)
+          echo $FIREFOX_PATH
+          pip show firefox
           echo $GITHUB_PATH
           echo $GITHUB_ENV
-          echo "$FIREFOX_PATH" >> $GITHUB_PATH
+          echo "$FIREFOX_PATH:$PATH" >> $GITHUB_PATH
       - name: Check if web browser is reachable by python
         shell: bash -el {0}
         run: |
+          source activate testenv
           python -c "import webbrowser; print(webbrowser.get('/usr/bin/firefox'))"
       - name: Find build type
         run: |
