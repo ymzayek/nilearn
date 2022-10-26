@@ -224,8 +224,7 @@ jobs:
           echo $PATH
           firefox --version
           which firefox
-          python -c "import webbrowser; print(webbrowser._browser.keys)"
-          python -c "import webbrowser; print(webbrowser.get(webbrowser._browser.keys[0]))"
+#          python -c "import webbrowser; print(webbrowser.get('/usr/bin/firefox'))"
       - name: Find build type
         run: |
           ./build_tools/github/build_type.sh
