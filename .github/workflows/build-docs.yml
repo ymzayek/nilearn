@@ -171,7 +171,7 @@ jobs:
     needs: restore_data
     defaults:
       run:
-        shell: bash -el {0}
+        shell: bash -l {0}
     steps:
       - name: Restore source cache
         uses: actions/cache@v3
@@ -216,7 +216,6 @@ jobs:
           miniconda-version: 'latest'
           channels: conda-forge
       - name: Install packages in conda env
-        shell: bash -el {0}
         run: |
           ./build_tools/github/build_docs_dependencies.sh
       - name: Check if web browser is reachable by python
@@ -225,7 +224,7 @@ jobs:
           firefox --version
           which firefox
           python -c "import webbrowser; webbrowser.register('firefox', None, webbrowser.BackgroundBrowser('/usr/bin/firefox'), preferred=True)"
-          python -c "import webbrowser; print(webbrowser.get())"
+          python -c "import webbrowser; print(webbrowser.get('firefox'))"
           which python
       - name: Find build type
         run: |
@@ -235,7 +234,6 @@ jobs:
           echo "PATTERN = $(cat pattern.txt)"
           echo "BUILD = $(cat build.txt)"
       - name: Build docs
-        shell: bash -el {0}
         run: |
           source activate testenv
           echo "Conda active env = $CONDA_DEFAULT_ENV";
