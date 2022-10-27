@@ -171,7 +171,7 @@ jobs:
     needs: restore_data
     defaults:
       run:
-        shell: bash
+        shell: bash -el {0}
     steps:
       - name: Restore source cache
         uses: actions/cache@v3
