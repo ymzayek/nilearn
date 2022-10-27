@@ -164,16 +164,64 @@ jobs:
           key: v1-spm_multimodal_fmri-${{ hashFiles('**/week_num**') }}
 
   download_and_cache_data:
-    # This prevents this workflow from running on a fork.
-    # To test this workflow on a fork, uncomment the following line.
     if: | 
       github.repository == 'ymzayek/nilearn'
       steps.restore-cache.outputs.cache-hit != 'true'
     runs-on: ubuntu-latest
     needs: restore_data
+    defaults:
+      run:
+        shell: bash -el {0}
     steps:
+      - name: Restore source cache
+        uses: actions/cache@v3
+        with:
+          path: .git
+          key: source-cache-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            source-cache-${{ runner.os }}
+      - name: Checkout nilearn
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Complete checkout
+        run: |
+          if ! git remote -v | grep upstream; then
+            git remote add upstream https://github.com/ymzayek/nilearn.git
+          fi
+          git fetch upstream
+      - name: Save source cache
+        uses: actions/cache@v3
+        with:
+          path: .git
+          key: source-cache-${{ runner.os }}-${{ github.run_id }}
+      - name: Merge with upstream
+        run: |
+          echo $(git log -1 --pretty=%B) | tee gitlog.txt
+          echo "gitlog.txt = $(cat gitlog.txt)"
+          echo ${GITHUB_REF//*pull\//} | tee merge.txt
+          if [[ $(cat merge.txt) != "" ]]; then
+              echo "Merging $(cat merge.txt)";
+              git pull --ff-only upstream "refs/pull/$(cat merge.txt)";
+          fi
+      - name: Install apt packages
+        run: |
+          ./build_tools/github/build_docs_apt_dependencies.sh
+      - name: Setup conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-activate-base: true
+          activate-environment: ''
+          miniconda-version: 'latest'
+          channels: conda-forge
+      - name: Install packages in conda env
+        run: |
+          ./build_tools/github/build_docs_dependencies.sh
       - name: Fetch and download nilearn data
         run: |
+          source activate testenv
+          echo "Conda active env = $CONDA_DEFAULT_ENV";
           ./build_tools/github/download_data.sh
       - name: Generate cache keys
         run: |
@@ -302,8 +350,6 @@ jobs:
           key: v1-spm_multimodal_fmri-${{ hashFiles('**/week_num**') }}
 
   build_docs:
-    # This prevents this workflow from running on a fork.
-    # To test this workflow on a fork, uncomment the following line.
     if: github.repository == 'ymzayek/nilearn'
     runs-on: ubuntu-latest
     needs: download_and_cache_data
@@ -311,51 +357,6 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
-      - name: Restore source cache
-        uses: actions/cache@v3
-        with:
-          path: .git
-          key: source-cache-${{ runner.os }}-${{ github.run_id }}
-          restore-keys: |
-            source-cache-${{ runner.os }}
-      - name: Checkout nilearn
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-      - name: Complete checkout
-        run: |
-          if ! git remote -v | grep upstream; then
-            git remote add upstream https://github.com/ymzayek/nilearn.git
-          fi
-          git fetch upstream
-      - name: Save source cache
-        uses: actions/cache@v3
-        with:
-          path: .git
-          key: source-cache-${{ runner.os }}-${{ github.run_id }}
-      - name: Merge with upstream
-        run: |
-          echo $(git log -1 --pretty=%B) | tee gitlog.txt
-          echo "gitlog.txt = $(cat gitlog.txt)"
-          echo ${GITHUB_REF//*pull\//} | tee merge.txt
-          if [[ $(cat merge.txt) != "" ]]; then
-              echo "Merging $(cat merge.txt)";
-              git pull --ff-only upstream "refs/pull/$(cat merge.txt)";
-          fi
-      - name: Install apt packages
-        run: |
-          ./build_tools/github/build_docs_apt_dependencies.sh
-      - name: Setup conda
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          auto-activate-base: true
-          activate-environment: ''
-          miniconda-version: 'latest'
-          channels: conda-forge
-      - name: Install packages in conda env
-        run: |
-          ./build_tools/github/build_docs_dependencies.sh
       - name: Check if web browser is reachable by python
         run: |
           echo $PATH
