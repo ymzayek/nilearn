@@ -164,9 +164,7 @@ jobs:
           key: v1-spm_multimodal_fmri-${{ hashFiles('**/week_num**') }}
 
   download_and_cache_data:
-    if: | 
-      github.repository == 'ymzayek/nilearn'
-      steps.restore-cache.outputs.cache-hit != 'true'
+    if: github.repository == 'ymzayek/nilearn'
     runs-on: ubuntu-latest
     needs: restore_data
     defaults:
