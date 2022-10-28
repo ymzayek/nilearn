@@ -226,6 +226,7 @@ jobs:
       - name: Find data location
         run: |
           find . -type d -name adhd
+          echo $(find $HOME -type d -name adhd)
       - name: Save data cache
         uses: actions/cache@v3
         with:
