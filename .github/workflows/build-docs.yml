@@ -70,15 +70,15 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-           /home/runner/nilearn_data/basc_multiscale_2015  # <  1 MB
-           /home/runner/nilearn_data/destrieux_surface     # <  1 MB
-           /home/runner/nilearn_data/difumo_atlases        # ~  4 MB
-           /home/runner/nilearn_data/fsaverage             # ~ 28 MB
-           /home/runner/nilearn_data/Megatrawls            # ~  9 MB
-           /home/runner/nilearn_data/msdl_atlas            # ~ 21 MB
-           /home/runner/nilearn_data/neurovault            # ~ 13 MB
-           /home/runner/nilearn_data/pauli_2017            # ~  1 MB
-           /home/runner/nilearn_data/yeo_2011              # ~  3 MB
+           nilearn_data/basc_multiscale_2015  # <  1 MB
+           nilearn_data/destrieux_surface     # <  1 MB
+           nilearn_data/difumo_atlases        # ~  4 MB
+           nilearn_data/fsaverage             # ~ 28 MB
+           nilearn_data/Megatrawls            # ~  9 MB
+           nilearn_data/msdl_atlas            # ~ 21 MB
+           nilearn_data/neurovault            # ~ 13 MB
+           nilearn_data/pauli_2017            # ~  1 MB
+           nilearn_data/yeo_2011              # ~  3 MB
           key: v1-small-cache-${{ hashFiles('**/week_num**') }}
       - name: Restore data cache
         uses: actions/cache@v3
@@ -227,15 +227,15 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-           /home/runner/nilearn_data/basc_multiscale_2015  # <  1 MB
-           /home/runner/nilearn_data/destrieux_surface     # <  1 MB
-           /home/runner/nilearn_data/difumo_atlases        # ~  4 MB
-           /home/runner/nilearn_data/fsaverage             # ~ 28 MB
-           /home/runner/nilearn_data/Megatrawls            # ~  9 MB
-           /home/runner/nilearn_data/msdl_atlas            # ~ 21 MB
-           /home/runner/nilearn_data/neurovault            # ~ 13 MB
-           /home/runner/nilearn_data/pauli_2017            # ~  1 MB
-           /home/runner/nilearn_data/yeo_2011              # ~  3 MB
+           nilearn_data/basc_multiscale_2015  # <  1 MB
+           nilearn_data/destrieux_surface     # <  1 MB
+           nilearn_data/difumo_atlases        # ~  4 MB
+           nilearn_data/fsaverage             # ~ 28 MB
+           nilearn_data/Megatrawls            # ~  9 MB
+           nilearn_data/msdl_atlas            # ~ 21 MB
+           nilearn_data/neurovault            # ~ 13 MB
+           nilearn_data/pauli_2017            # ~  1 MB
+           nilearn_data/yeo_2011              # ~  3 MB
           key: v1-small-cache-${{ hashFiles('**/week_num**') }}
       - name: Save data cache
         uses: actions/cache@v3
