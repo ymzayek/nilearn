@@ -214,7 +214,7 @@ jobs:
         run: |
           echo 'export BROWSER="/usr/bin/firefox"' >> ~/.bashrc
           source ~/.bashrc
-          echo $Browser
+          echo $BROWSER
       - name: Check if web browser is reachable by python
         run: |
           echo $Browser
