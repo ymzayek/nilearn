@@ -210,13 +210,16 @@ jobs:
       - name: Install packages in conda env
         run: |
           ./build_tools/github/build_docs_dependencies.sh
+      - name: Add default browser to environment
+        run: |
+          echo "export BROWSER=/usr/bin/firefox" >> ~/.bashrc
       - name: Check if web browser is reachable by python
         run: |
           source activate testenv
           echo "Conda active env = $CONDA_DEFAULT_ENV";
           firefox --version
           which firefox
-          sudo update-alternatives --set x-www-browser /usr/bin/firefox
+#          sudo update-alternatives --set x-www-browser /usr/bin/firefox
           python -c "import plotly.io as pio; print(pio.renderers)"
 #          python -c "import webbrowser; webbrowser.register('firefox', None, webbrowser.BackgroundBrowser('/usr/bin/firefox'), preferred=True)"
 #          python -c "import webbrowser; print(webbrowser.get('firefox'))"
