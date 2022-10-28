@@ -96,7 +96,8 @@ jobs:
           ./build_tools/github/download_data.sh
           data=$(find $HOME -type d -name nilearn_data)
           echo $data
-          echo "NILEARN_DATA=$data" >> $GITHUB_OUTPUT
+          echo $GITHUB_WORKSPACE
+          echo "NILEARN_DATA=$data" >> $GITHUB_WORKSPACE
       - name: Save data cache
         uses: actions/cache@v3
         with:
@@ -115,7 +116,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-           ${{ steps.download_data.outputs.NILEARN_DATA }}"/adhd                  # ~ 45 MB
+           '**/adhd/**'                 # ~ 45 MB
           key: v1-adhd-${{ hashFiles('**/week_num**') }}
       - name: Save data cache
         uses: actions/cache@v3
