@@ -12,17 +12,37 @@ on:
     - cron: "0 6 * * *"
 
 jobs:
-  # Check and restore data if caches exist
-  restore_data:
+  # Steps to download data and build docs.
+  # First checks and restores data from cache if it exists.
+  build_docs:
     # This prevents this workflow from running on a fork.
     # To test this workflow on a fork, uncomment the following line.
     if: github.repository == 'ymzayek/nilearn'
     runs-on: ubuntu-latest
     steps:
+      - name: Restore source cache
+        uses: actions/cache@v3
+        with:
+          path: .git
+          key: source-cache-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            source-cache-${{ runner.os }}
       - name: Checkout nilearn
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Complete checkout
+        run: |
+          if ! git remote -v | grep upstream; then
+            git remote add upstream https://github.com/ymzayek/nilearn.git
+          fi
+          git fetch upstream
+      - name: Save source cache
+        uses: actions/cache@v3
+        with:
+          path: .git
+          key: source-cache-${{ runner.os }}-${{ github.run_id }}
       - name: Determine force download
         run: |
           commit_msg=$(git log -2 --format=oneline);
@@ -164,41 +184,7 @@ jobs:
            /home/runner/nilearn_data/spm_multimodal_fmri   # ~227 MB
           key: v1-spm_multimodal_fmri-${{ hashFiles('**/week_num**') }}
 
-  # Download data and cache if it is not restored in previous job, then
-  # run doc build
-  download_data_and_build_docs:
-    # This prevents this workflow from running on a fork.
-    # To test this workflow on a fork, uncomment the following line.
-    if: github.repository == 'ymzayek/nilearn'
-    runs-on: ubuntu-latest
-    needs: restore_data
-    defaults:
-      run:
-        shell: bash -el {0}
-    steps:
-      - name: Restore source cache
-        uses: actions/cache@v3
-        with:
-          path: .git
-          key: source-cache-${{ runner.os }}-${{ github.run_id }}
-          restore-keys: |
-            source-cache-${{ runner.os }}
-      - name: Checkout nilearn
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-      - name: Complete checkout
-        run: |
-          if ! git remote -v | grep upstream; then
-            git remote add upstream https://github.com/ymzayek/nilearn.git
-          fi
-          git fetch upstream
-      - name: Save source cache
-        uses: actions/cache@v3
-        with:
-          path: .git
-          key: source-cache-${{ runner.os }}-${{ github.run_id }}
+      # Set up environment
       - name: Merge with upstream
         run: |
           echo $(git log -1 --pretty=%B) | tee gitlog.txt
@@ -221,6 +207,9 @@ jobs:
       - name: Install packages in conda env
         run: |
           ./build_tools/github/build_docs_dependencies.sh
+
+      # Download data and cache if it is not restored in previous steps, then
+      # run doc build
       - name: Fetch and download nilearn data
         run: |
           source activate testenv
@@ -357,9 +346,11 @@ jobs:
           echo $PATH
           firefox --version
           which firefox
-          which python
+          which google-chrome
 #          python -c "import webbrowser; webbrowser.register('firefox', None, webbrowser.BackgroundBrowser('/usr/bin/firefox'), preferred=True)"
 #          python -c "import webbrowser; print(webbrowser.get('firefox'))"
+          python -c "import plotly.io as pio; print(pio.renderers'))"
+
       - name: Find build type
         run: |
           ./build_tools/github/build_type.sh
