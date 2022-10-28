@@ -112,7 +112,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-           '**/adhd/**'                 # ~ 45 MB
+           /home/runner/work/nilearn/nilearn/nilearn_data/adhd                 # ~ 45 MB
           key: v1-adhd-${{ hashFiles('**/week_num**') }}
       - name: Save data cache
         uses: actions/cache@v3
