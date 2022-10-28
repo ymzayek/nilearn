@@ -215,8 +215,6 @@ jobs:
       - name: Check if web browser is reachable by python
         run: |
           echo $BROWSER
-#          sudo update-alternatives --set x-www-browser /usr/bin/firefox
-#          source ~/.bashrc
           source activate testenv
           echo "Conda active env = $CONDA_DEFAULT_ENV"
           firefox --version
