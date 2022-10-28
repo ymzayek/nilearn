@@ -212,6 +212,8 @@ jobs:
           ./build_tools/github/build_docs_dependencies.sh
       - name: Check if web browser is reachable by python
         run: |
+          source activate testenv
+          echo "Conda active env = $CONDA_DEFAULT_ENV";
           echo $PATH
           firefox --version
           which firefox
