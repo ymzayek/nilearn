@@ -99,7 +99,7 @@ jobs:
           source activate testenv
           echo "Conda active env = $CONDA_DEFAULT_ENV";
           ./build_tools/github/download_data.sh
-          data=$(find . -type d -name nilearn_data)
+          data=$(find . -type d -name adhd)
           echo $data
           echo "NILEARN_DATA=$data" >> $GITHUB_OUTPUT
       - name: Save data cache
