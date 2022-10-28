@@ -340,17 +340,15 @@ jobs:
           path: |
            /home/runner/nilearn_data/spm_multimodal_fmri   # ~227 MB
           key: v1-spm_multimodal_fmri-${{ hashFiles('**/week_num**') }}
-
       - name: Check if web browser is reachable by python
         run: |
           echo $PATH
           firefox --version
           which firefox
           which google-chrome
+          python -c "import plotly.io as pio; print(pio.renderers))"
 #          python -c "import webbrowser; webbrowser.register('firefox', None, webbrowser.BackgroundBrowser('/usr/bin/firefox'), preferred=True)"
 #          python -c "import webbrowser; print(webbrowser.get('firefox'))"
-          python -c "import plotly.io as pio; print(pio.renderers'))"
-
       - name: Find build type
         run: |
           ./build_tools/github/build_type.sh
