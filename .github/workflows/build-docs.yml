@@ -43,11 +43,6 @@ jobs:
             git remote add upstream https://github.com/ymzayek/nilearn.git
           fi
           git fetch upstream
-      - name: Save source cache
-        uses: actions/cache@v3
-        with:
-          path: .git
-          key: source-cache-${{ runner.os }}-${{ github.run_id }}
       - name: Determine force download
         run: |
           commit_msg=$(git log -2 --format=oneline);
@@ -99,7 +94,7 @@ jobs:
           source activate testenv
           echo "Conda active env = $CONDA_DEFAULT_ENV";
           ./build_tools/github/download_data.sh
-          data=$(find . -type d -name adhd)
+          data=$(find $HOME -type d -name nilearn_data)
           echo $data
           echo "NILEARN_DATA=$data" >> $GITHUB_OUTPUT
       - name: Save data cache
