@@ -216,17 +216,17 @@ jobs:
       # Download data and cache if it is not restored in previous steps, then
       # run doc build
       - name: Fetch and download nilearn data
+        id: download_data
         run: |
           source activate testenv
           echo "Conda active env = $CONDA_DEFAULT_ENV";
           ./build_tools/github/download_data.sh
+          data=$(find . -type d -name nilearn_data)
+          echo $data
+          echo "::set-output name=NILEARN_DATA::$data"
       - name: Generate cache keys
         run: |
           date +%U > week_num;
-      - name: Find data location
-        run: |
-          find . -type d -name adhd
-          echo $(find $HOME -type d -name adhd)
       - name: Save data cache
         uses: actions/cache@v3
         with:
@@ -245,7 +245,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-           /home/runner/nilearn_data/adhd                  # ~ 45 MB
+           ${{ steps.download_data.outputs.NILEARN_DATA }}"/adhd                  # ~ 45 MB
           key: v1-adhd-${{ hashFiles('**/week_num**') }}
       - name: Save data cache
         uses: actions/cache@v3
