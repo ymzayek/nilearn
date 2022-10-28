@@ -19,6 +19,8 @@ jobs:
     # To test this workflow on a fork, uncomment the following line.
     if: github.repository == 'ymzayek/nilearn'
     runs-on: ubuntu-latest
+    env:
+      BROWSER: "/usr/bin/firefox"
     defaults:
       run:
         shell: bash -el {0}
@@ -210,16 +212,11 @@ jobs:
       - name: Install packages in conda env
         run: |
           ./build_tools/github/build_docs_dependencies.sh
-#      - name: Add default browser to environment
-#        run: |
-#          echo 'export BROWSER="/usr/bin/firefox"' >> ~/.bashrc
-#          source ~/.bashrc
-#          echo $BROWSER
       - name: Check if web browser is reachable by python
         run: |
           echo $BROWSER
-          sudo update-alternatives --set x-www-browser /usr/bin/firefox
-          source ~/.bashrc
+#          sudo update-alternatives --set x-www-browser /usr/bin/firefox
+#          source ~/.bashrc
           source activate testenv
           echo "Conda active env = $CONDA_DEFAULT_ENV"
           firefox --version
