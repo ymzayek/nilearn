@@ -212,9 +212,12 @@ jobs:
           ./build_tools/github/build_docs_dependencies.sh
       - name: Add default browser to environment
         run: |
-          echo "export BROWSER=/usr/bin/firefox" >> ~/.bashrc
+          echo 'export BROWSER="/usr/bin/firefox"' >> ~/.bashrc
+          source ~/.bashrc
+          echo $Browser
       - name: Check if web browser is reachable by python
         run: |
+          echo $Browser
           source activate testenv
           echo "Conda active env = $CONDA_DEFAULT_ENV";
           firefox --version
