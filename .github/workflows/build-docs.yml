@@ -24,6 +24,7 @@ jobs:
     defaults:
       run:
         shell: bash -el {0}
+        working-directory: nilearn_ci
     steps:
       - name: Restore source cache
         uses: actions/cache@v3
@@ -112,7 +113,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-           /home/runner/work/nilearn/nilearn/nilearn_data/adhd                 # ~ 45 MB
+           $GITHUB_WORKSPACE/nilearn_data/adhd                 # ~ 45 MB
           key: v1-adhd-${{ hashFiles('**/week_num**') }}
       - name: Save data cache
         uses: actions/cache@v3
