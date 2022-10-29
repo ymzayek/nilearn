@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BROWSER: "/usr/bin/firefox"
+      DISPLAY: ':99.0'
     defaults:
       run:
         shell: bash -el {0}
@@ -94,7 +95,6 @@ jobs:
           source activate testenv
           echo "Conda active env = $CONDA_DEFAULT_ENV";
           ./build_tools/github/download_data.sh
-        working-directory: /home/runner/work/nilearn/nilearn
       - name: Save data cache
         uses: actions/cache@v3
         with:
@@ -113,7 +113,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-           $GITHUB_WORKSPACE/nilearn_data/adhd                 # ~ 45 MB
+           $GITHUB_WORKSPACE/**/adhd                 # ~ 45 MB
           key: v1-adhd-${{ hashFiles('**/week_num**') }}
       - name: Save data cache
         uses: actions/cache@v3
@@ -224,6 +224,9 @@ jobs:
         run: |
           echo "PATTERN = $(cat pattern.txt)"
           echo "BUILD = $(cat build.txt)"
+#      - name: Set up display server for virtual browser
+#        run: |
+#          Xvfb -ac :99 -screen 0 1280x1024x16 > /dev/null 2>&1 &
       - name: Build docs
         run: |
           source activate testenv
