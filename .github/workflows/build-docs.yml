@@ -22,7 +22,7 @@ jobs:
     env:
       BROWSER: "/usr/bin/firefox"
       DISPLAY: ':99.0'
-      NILEARN_DATA: "$HOME/nilearn_data"
+      NILEARN_DATA: "/home/runner/work/nilearn/nilearn"
     defaults:
       run:
         shell: bash -el {0}
@@ -106,7 +106,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-           $NILEARN_DATA/adhd/*                 # ~ 45 MB
+           $NILEARN_DATA/adhd                 # ~ 45 MB
           key: v1-adhd-${{ hashFiles('**/week_num**') }}
       - name: Data caching
         uses: actions/cache@v3
