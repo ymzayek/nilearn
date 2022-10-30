@@ -95,6 +95,10 @@ jobs:
           source activate testenv
           echo "Conda active env = $CONDA_DEFAULT_ENV";
           ./build_tools/github/download_data.sh
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
       - name: Save data cache
         uses: actions/cache@v3
         with:
