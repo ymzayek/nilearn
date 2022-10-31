@@ -22,7 +22,7 @@ jobs:
     env:
       BROWSER: "/usr/bin/firefox"
       DISPLAY: ':99.0'
-      NILEARN_DATA: "/home/runner/work/nilearn/nilearn"
+      NILEARN_DATA: "/home/runner/work/nilearn/nilearn/nilearn_data"
     defaults:
       run:
         shell: bash -el {0}
