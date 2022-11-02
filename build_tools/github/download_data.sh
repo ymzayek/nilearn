@@ -37,7 +37,7 @@ datasets.fetch_localizer_first_level()
 datasets.fetch_spm_multimodal_fmri()
 datasets.fetch_localizer_contrasts(
     ['left button press (auditory cue)'],
-    n_subjects=94, legacy_format=False
+    n_subjects=94
 )
 datasets.fetch_localizer_contrasts(
     contrasts=[
