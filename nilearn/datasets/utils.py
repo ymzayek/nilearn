@@ -21,7 +21,7 @@ import requests
 
 from .._utils import fill_doc
 
-_REQUESTS_TIMEOUT = (15.1, 61)
+_REQUESTS_TIMEOUT = (20.1, 61)
 
 
 def md5_hash(string):
