@@ -15,7 +15,7 @@ jobs:
     machine:
       image: ubuntu-2004:202111-01
     environment:
-      - GITHUB_ARTIFACT_URL: << pipeline.parameters.GITHUB_RUN_URL >>/doc.zip
+        GITHUB_ARTIFACT_URL: << pipeline.parameters.GITHUB_RUN_URL >>/doc.zip
     steps:
       - checkout
       - run: bash build_tools/circle/download_documentation.sh
@@ -33,7 +33,8 @@ jobs:
       # can be attached and deployed in the "deploy" job
       - persist_to_workspace:
           root: doc/_build
-          paths: html
+          paths:
+              - html
 
   deploy:
     docker:
