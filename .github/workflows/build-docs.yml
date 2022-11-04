@@ -12,17 +12,11 @@ on:
     - cron: "0 6 * * *"
 
 jobs:
-  # Steps to download data and build docs.
-  # First checks and restores data from cache if it exists.
-  build_docs:
+  source_cache:
     # This prevents this workflow from running on a fork.
     # To test this workflow on a fork, uncomment the following line.
     if: github.repository == 'ymzayek/nilearn'
     runs-on: ubuntu-latest
-    env:
-      BROWSER: "/usr/bin/firefox"
-      DISPLAY: ':99.0'
-      NILEARN_DATA: "/home/runner/work/nilearn/nilearn/nilearn_data"
     defaults:
       run:
         shell: bash -el {0}
@@ -45,24 +39,27 @@ jobs:
             git remote add upstream https://github.com/ymzayek/nilearn.git
           fi
           git fetch upstream
-      - name: Determine force download
-        run: |
-          commit_msg=$(git log -2 --format=oneline);
-          echo $commit_msg;
-          if [[ $commit_msg == *"[force download]"* ]]; then
-            echo "All datasets will be downloaded as requested.";
-            touch restore.txt;
-          else
-            echo "Data cache will be used if available.";
-            echo "true" | tee restore.txt;
-          fi
-      - name: Get cache key
-        run: |
-          if [[ $(cat restore.txt) == "true" ]]; then
-              date +%U > week_num;
-          else
-              echo "missing" > week_num;
-          fi
+
+  # Steps to download data and build docs.
+  # First checks and restores data from cache if it exists.
+  build_docs:
+    # This prevents this workflow from running on a fork.
+    # To test this workflow on a fork, uncomment the following line.
+    if: github.repository == 'ymzayek/nilearn'
+    runs-on: ubuntu-latest
+    env:
+      BROWSER: "/usr/bin/firefox"
+      DISPLAY: ':99.0'
+      NILEARN_DATA: "/home/runner/work/nilearn/nilearn/nilearn_data"
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - name: Checkout nilearn
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
 
       # Set up environment
       - name: Merge with upstream
@@ -88,6 +85,24 @@ jobs:
         run: |
           ./build_tools/github/build_docs_dependencies.sh
 
+      - name: Determine force download
+        run: |
+          commit_msg=$(git log -2 --format=oneline);
+          echo $commit_msg;
+          if [[ $commit_msg == *"[force download]"* ]]; then
+            echo "All datasets will be downloaded as requested.";
+            touch restore.txt;
+          else
+            echo "Data cache will be used if available.";
+            echo "true" | tee restore.txt;
+          fi
+      - name: Get cache key
+        run: |
+          if [[ $(cat restore.txt) == "true" ]]; then
+              date +%U > week_num;
+          else
+              echo "missing" > week_num;
+          fi
       - name: Data caching
         uses: actions/cache@v3
         # ~47 MB
@@ -230,7 +245,7 @@ jobs:
            nilearn_data/spm_multimodal_fmri
           key: v1-spm_multimodal_fmri-${{ hashFiles('**/week_num**') }}
 
-      # Download data and cache if it is not restored in previous steps, then
+      # Download data if not restored in previous steps, then
       # run doc build
       - name: Fetch and download nilearn data
         id: download_data
