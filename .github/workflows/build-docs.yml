@@ -12,11 +12,17 @@ on:
     - cron: "0 6 * * *"
 
 jobs:
-  source_cache:
+  # Steps to download data and build docs.
+  # First checks and restores data from cache if it exists.
+  build_docs:
     # This prevents this workflow from running on a fork.
     # To test this workflow on a fork, uncomment the following line.
     if: github.repository == 'ymzayek/nilearn'
     runs-on: ubuntu-latest
+    env:
+      BROWSER: "/usr/bin/firefox"
+      DISPLAY: ':99.0'
+      NILEARN_DATA: "/home/runner/work/nilearn/nilearn/nilearn_data"
     defaults:
       run:
         shell: bash -el {0}
@@ -39,38 +45,6 @@ jobs:
             git remote add upstream https://github.com/ymzayek/nilearn.git
           fi
           git fetch upstream
-
-  # Steps to download data and build docs.
-  # First checks and restores data from cache if it exists.
-  build_docs:
-    # This prevents this workflow from running on a fork.
-    # To test this workflow on a fork, uncomment the following line.
-    if: github.repository == 'ymzayek/nilearn'
-    runs-on: ubuntu-latest
-    env:
-      BROWSER: "/usr/bin/firefox"
-      DISPLAY: ':99.0'
-      NILEARN_DATA: "/home/runner/work/nilearn/nilearn/nilearn_data"
-    defaults:
-      run:
-        shell: bash -el {0}
-    steps:
-      - name: Restore source caching
-        uses: actions/cache@v3
-        with:
-          path: .git
-          key: source-cache-${{ runner.os }}-${{ github.run_id }}
-      - name: Checkout nilearn
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-      - name: Complete checkout
-        run: |
-          if ! git remote -v | grep upstream; then
-            git remote add upstream https://github.com/ymzayek/nilearn.git
-          fi
-          git fetch upstream
       - name: Merge with upstream
         run: |
           echo $(git log -1 --pretty=%B) | tee gitlog.txt
@@ -80,6 +54,7 @@ jobs:
               echo "Merging $(cat merge.txt)";
               git pull --ff-only upstream "refs/pull/$(cat merge.txt)";
           fi
+
       # Set up environment
       - name: Install apt packages
         run: |
@@ -120,6 +95,7 @@ jobs:
           path: |
            nilearn_data/basc_multiscale_2015
            nilearn_data/destrieux_surface
+           nilearn_data/destrieux_2009
            nilearn_data/difumo_atlases
            nilearn_data/fsaverage
            nilearn_data/Megatrawls
