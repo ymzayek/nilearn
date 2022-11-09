@@ -33,14 +33,12 @@ jobs:
     docker:
       - image: circleci/python:3.9
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "53:9f:4a:b1:56:9d:76:33:7a:e8:2e:a1:fe:41:81:34"
       - attach_workspace:
           at: /tmp/_build
       - run:
           name: Fetch docs
           command: |
+              exit 1
               set -e
               mkdir -p ~/.ssh
               ssh-keyscan github.com >> ~/.ssh/known_hosts;
