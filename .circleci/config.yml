@@ -33,6 +33,9 @@ jobs:
     docker:
       - image: circleci/python:3.9
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "53:9f:4a:b1:56:9d:76:33:7a:e8:2e:a1:fe:41:81:34"
       - attach_workspace:
           at: /tmp/_build
       - run:
@@ -49,24 +52,7 @@ jobs:
           name: Deploy dev docs
           command: |
               set -e;
-              if [ "${CIRCLE_BRANCH}" == "main" ]; then
-                git config --global user.email "circle@nilearn.com";
-                git config --global user.name "CircleCI";
-                cd ~/nilearn.github.io;
-                git checkout main
-                git remote -v
-                git fetch origin
-                git reset --hard origin/main
-                git clean -xdf
-                echo "Deploying dev docs for ${CIRCLE_BRANCH}.";
-                rm -Rf dev;
-                cp -a /tmp/_build/html dev;
-                git add -A;
-                git commit -m "CircleCI update of dev docs (build: ${CIRCLE_BUILD_NUM}).";
-                git push origin main;
-              else
-                echo "No deployment (build: ${CIRCLE_BRANCH}).";
-              fi
+              echo "No deployment this is a test (build: ${CIRCLE_BRANCH}).";
 
 workflows:
   version: 2
