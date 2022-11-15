@@ -45,7 +45,7 @@ jobs:
           echo $(git log -1 --pretty=%B) | tee gitlog.txt
           echo "gitlog.txt = $(cat gitlog.txt)"
           echo ${GITHUB_REF//*pull\//} | tee merge.txt
-          if [[ $(cat merge.txt) != "" ]]; then
+          if [ "$GITHUB_REF_NAME" != "main" ] && [[ $(cat merge.txt) != "" ]]; then
               echo "Merging $(cat merge.txt)";
               git pull --ff-only upstream "refs/pull/$(cat merge.txt)";
           fi
