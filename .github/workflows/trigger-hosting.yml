@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     # Run the job only if the "Documentation builder" workflow succeeded
     # Prevents this workflow from running on a fork.
-    # To test this workflow on a fork remove the `github.repository == nilearn/nilearn` condition
+    # To test this workflow on a fork remove the `github.repository == ymzayek/nilearn` condition
     if: github.repository == 'ymzayek/nilearn' && github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout nilearn
