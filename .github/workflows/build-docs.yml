@@ -12,6 +12,40 @@ on:
     - cron: "0 6 * * *"
 
 jobs:
+  source_caching:
+    # This prevents this workflow from running on a fork.
+    # To test this workflow on a fork, uncomment the following line.
+    if: github.repository == 'ymzayek/nilearn'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - name: Source caching
+        uses: actions/cache@v3
+        with:
+          path: .git
+          key: source-cache-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            source-cache-${{ runner.os }}
+      - name: Checkout nilearn
+        uses: actions/checkout@v3
+        with:
+          # If pull request, checkout HEAD commit with all commit history
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Complete checkout
+        run: |
+          if ! git remote -v | grep upstream; then
+            git remote add upstream https://github.com/ymzayek/nilearn.git
+          fi
+          git fetch upstream
+      - name: Persist to next job
+        uses: actions/upload-artifact@v3
+        with:
+          name: repo
+          path: .
+
   # Steps to download data and build docs.
   # First checks and restores data from cache if it exists.
   build_docs:
@@ -27,30 +61,16 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
-      - name: Source caching
-        uses: actions/cache@v3
-        with:
-          path: .git
-          key: source-cache-${{ runner.os }}-${{ github.run_id }}
-          restore-keys: |
-            source-cache-${{ runner.os }}
       # TODO: Remove step before merge
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-      - name: Checkout nilearn
-        uses: actions/checkout@v3
+      # try with caching restore action, does it save new info?
+      - name: Download persisted source data
+        uses: actions/download-artifact@v3
         with:
-          # If pull request, checkout HEAD commit with all commit history
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-      - name: Complete checkout
-        run: |
-          if ! git remote -v | grep upstream; then
-            git remote add upstream https://github.com/ymzayek/nilearn.git
-          fi
-          git fetch upstream
+          name: repo
       - name: Merge with upstream
         run: |
           set -x
