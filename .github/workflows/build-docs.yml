@@ -40,11 +40,6 @@ jobs:
             git remote add upstream https://github.com/ymzayek/nilearn.git
           fi
           git fetch upstream
-      - name: Persist to next job
-        uses: actions/upload-artifact@v3
-        with:
-          name: repo
-          path: .
 
   # Steps to download data and build docs.
   # First checks and restores data from cache if it exists.
@@ -66,11 +61,15 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-      # try with caching restore action, does it save new info?
-      - name: Download persisted source data
-        uses: actions/download-artifact@v3
+      - name: Source caching
+        uses: actions/cache@v3
         with:
-          name: repo
+          path: .git
+          key: source-cache-${{ runner.os }}-${{ github.run_id }}
+      - name: Checkout nilearn
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Merge with upstream
         run: |
           set -x
