@@ -19,6 +19,7 @@ jobs:
     # To test this workflow on a fork, uncomment the following line.
     if: github.repository == 'ymzayek/nilearn'
     runs-on: ubuntu-latest
+    timeout-minutes: 360
     env:
       BROWSER: "/usr/bin/firefox"
       DISPLAY: ':99.0'
