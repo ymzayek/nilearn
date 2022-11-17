@@ -264,3 +264,8 @@ jobs:
         with:
           name: doc
           path: doc/_build/html
+      - name: Note about build
+        run: |
+          if [[ "$(cat build.txt)" != "html-strict" ]]; then
+              echo "Partial build : Data is still cached";
+          fi
