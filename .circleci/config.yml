@@ -13,9 +13,9 @@ parameters:
 jobs:
   host_docs:
     machine:
-      image: ubuntu-2004:202111-01
+      - image: ubuntu-2004:202111-01
     environment:
-        GITHUB_ARTIFACT_URL: << pipeline.parameters.GITHUB_RUN_URL >>/doc.zip
+      - GITHUB_ARTIFACT_URL: << pipeline.parameters.GITHUB_RUN_URL >>/doc.zip
     steps:
       - checkout
       - run: bash build_tools/circle/download_documentation.sh
@@ -41,17 +41,17 @@ jobs:
       - run:
           name: Fetch docs
           command: |
-              set -e
-              mkdir -p ~/.ssh
-              ssh-keyscan github.com >> ~/.ssh/known_hosts;
-              if [ ! -d ~/nilearn.github.io ]; then
-                git clone git@github.com:nilearn/nilearn.github.io.git ~/nilearn.github.io --depth=1
-              fi
+            set -e
+            mkdir -p ~/.ssh
+            ssh-keyscan github.com >> ~/.ssh/known_hosts;
+            if [ ! -d ~/nilearn.github.io ]; then
+              git clone git@github.com:nilearn/nilearn.github.io.git ~/nilearn.github.io --depth=1
+            fi
       - run:
           name: Deploy dev docs
           command: |
-              set -e;
-              echo "No deployment this is a test (build: ${CIRCLE_BRANCH}).";
+            set -e;
+            echo "No deployment this is a test (build: ${CIRCLE_BRANCH}).";
 
 workflows:
   version: 2
