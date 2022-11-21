@@ -286,5 +286,6 @@ jobs:
       - name: Note about build
         run: |
           if [[ "$(cat build.txt)" != "html-strict" ]]; then
-              echo "Partial build : Data is still cached";
+              echo "Partial build : Data is downloaded and cached only for first build of the week";
+              echo "Data is never cached if [force download] commit tag is used";
           fi
