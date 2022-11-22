@@ -269,7 +269,7 @@ jobs:
           echo "BUILD = $(cat build.txt)"
       - name: Set up display server for virtual browser
         run: |
-          Xvfb -ac :99 -screen 0 1280x1024x16 > /dev/null 2>&1 &
+          Xvfb -ac :99 -screen 0 1280x1024x8 > /dev/null 2>&1 &
       - name: Build docs
         run: |
           source activate testenv
