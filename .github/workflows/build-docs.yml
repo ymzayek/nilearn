@@ -253,12 +253,12 @@ jobs:
 
       # Download data if it is not restored in previous steps, then
       # run doc build
-      - name: Fetch and download nilearn data
-        id: download_data
-        run: |
-          source activate testenv
-          echo "Conda active env = $CONDA_DEFAULT_ENV";
-          ./build_tools/github/download_data.sh
+#      - name: Fetch and download nilearn data
+#        id: download_data
+#        run: |
+#          source activate testenv
+#          echo "Conda active env = $CONDA_DEFAULT_ENV";
+#          ./build_tools/github/download_data.sh
       - name: Find build type
         run: |
           ./build_tools/github/build_type.sh
