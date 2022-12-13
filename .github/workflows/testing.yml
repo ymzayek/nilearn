@@ -113,6 +113,8 @@ jobs:
       - shell: bash {0}
         run: ./build_tools/github/install.sh
         name: 'Install nilearn'
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - shell: bash {0}
         run: ./build_tools/github/test_docs.sh
         name: 'Run doctests'
