@@ -60,14 +60,14 @@ def _make_canica_components(shape):
                       component3.ravel(), component4.ravel()))
 
 
-def _make_canica_test_data(rng=None, n_subjects=8, noisy=True):
+def _make_canica_test_data(rng=None, n_subjects=8, noisy=False):
     if rng is None:
         rng = np.random.RandomState(0)
     shape = (30, 30, 5)
     affine = np.eye(4)
     components = _make_canica_components(shape)
     if noisy:  # Creating noisy non positive data
-        components[rng.randn(*components.shape) > .8] *= -2.
+        components[rng.randn(*components.shape) > .8] *= -5.
 
     for mp in components:
         assert mp.max() <= -mp.min()  # Goal met ?
@@ -92,7 +92,7 @@ def test_canica_square_img():
 
     # We do a large number of inits to be sure to find the good match
     canica = CanICA(n_components=4, random_state=rng, mask=mask_img,
-                    smoothing_fwhm=0., n_init=50)
+                    smoothing_fwhm=None, n_init=50)
     canica.fit(data)
     maps = get_data(canica.components_img_)
     maps = np.rollaxis(maps, 3, 0)
