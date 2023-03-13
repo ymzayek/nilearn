@@ -5,6 +5,7 @@
 import nibabel
 import numpy as np
 import pytest
+import warnings
 from nilearn._utils.data_gen import (
     generate_fake_fmri,
     generate_labeled_regions,
@@ -37,9 +38,10 @@ def test__check_shape_and_affine_compatibility_without_dim():
 
     img2 = nibabel.Nifti1Image(np.zeros(shape), affine)
 
-    with pytest.warns(None):
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
         signal_extraction._check_shape_and_affine_compatibility(img1, img2)
-
+        
 
 def test__check_shape_and_affine_compatibility_with_dim():
     """Ensure correct behaviour for valid data without dim"""
@@ -50,7 +52,8 @@ def test__check_shape_and_affine_compatibility_with_dim():
     mask_shape = (2, 3, 4)
     img2 = nibabel.Nifti1Image(np.zeros(mask_shape), affine)
 
-    with pytest.warns(None):
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
         signal_extraction._check_shape_and_affine_compatibility(
             img1, img2, dim=3
         )

@@ -3,6 +3,7 @@ import nibabel
 import numpy as np
 import pandas as pd
 import pytest
+import warnings
 from nilearn.regions.parcellations import (
     Parcellations,
     _check_parameters_transform,
@@ -87,10 +88,10 @@ def test_parcellations_warnings(test_empty_image):
 
 
 def test_parcellations_no_warnings(test_empty_image):
-    parcellator = Parcellations(method="kmeans", n_parcels=1)
-    with pytest.warns(None) as record:
+    parcellator = Parcellations(method='kmeans', n_parcels=1)
+    with warnings.catch_warnings(record=True) as record:
         parcellator.fit(test_empty_image)
-    assert all(r.category is not UserWarning for r in record.list)
+    assert all([r.category is not UserWarning for r in record])
 
 
 @pytest.mark.parametrize("method", METHODS)
