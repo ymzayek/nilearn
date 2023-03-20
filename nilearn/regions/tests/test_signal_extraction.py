@@ -2,10 +2,11 @@
 # Author: Ph. Gervais
 # License: simplified BSD
 
+import warnings
+
 import nibabel
 import numpy as np
 import pytest
-import warnings
 from nilearn._utils.data_gen import (
     generate_fake_fmri,
     generate_labeled_regions,
@@ -41,7 +42,7 @@ def test__check_shape_and_affine_compatibility_without_dim():
     with warnings.catch_warnings():
         warnings.simplefilter("error")
         signal_extraction._check_shape_and_affine_compatibility(img1, img2)
-        
+
 
 def test__check_shape_and_affine_compatibility_with_dim():
     """Ensure correct behaviour for valid data without dim"""
