@@ -388,7 +388,7 @@ def _plot_contrasts(contrasts, design_matrices):
                                                  colorbar=True)
             contrast_plot.set_xlabel(contrast_name)
             contrast_plot.figure.set_figheight(2)
-            contrast_plot.figure.set_tight_layout(True)
+            contrast_plot.figure.set_layout_engine(True)
             url_contrast_plot_svg = _plot_to_svg(contrast_plot)
             # prevents sphinx-gallery & jupyter
             # from scraping & inserting plots
