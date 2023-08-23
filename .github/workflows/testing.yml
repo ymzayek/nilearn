@@ -11,7 +11,6 @@ on:
 
 jobs:
     min_requirements:
-        if: github.repository == 'ymzayek/nilearn'
         runs-on: ubuntu-20.04
         name: Python 3.7, minimal requirements without Matplotlib
         defaults:
@@ -42,7 +41,6 @@ jobs:
             name: Upload coverage to CodeCov
 
     min_requirements_matplotlib:
-        if: github.repository == 'nilearn/nilearn'
         runs-on: ubuntu-20.04
         name: Python 3.7, minimal requirements with Matplotlib
         defaults:
@@ -71,7 +69,6 @@ jobs:
             name: Run tests
 
     latest:
-        if: github.repository == 'nilearn/nilearn'
         runs-on: ${{ matrix.os }}
         strategy:
             fail-fast: false
@@ -110,7 +107,6 @@ jobs:
             name: Upload coverage to CodeCov
 
     prerelease:
-        if: github.repository == 'ymzayek/nilearn'
         runs-on: ${{ matrix.os }}
         strategy:
             fail-fast: false
