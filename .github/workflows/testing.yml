@@ -11,7 +11,7 @@ on:
 
 jobs:
     min_requirements:
-        if: github.repository == 'nilearn/nilearn'
+        if: github.repository == 'ymzayek/nilearn'
         runs-on: ubuntu-20.04
         name: Python 3.7, minimal requirements without Matplotlib
         defaults:
