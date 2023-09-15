@@ -20,7 +20,7 @@ jobs:
   # Make citation metadata from CITATION.cff is valid.
   # as it is used in the documentation build.
     validate_cff:
-        if: github.repository == 'nilearn/nilearn'
+        if: github.repository == 'ymzayek/nilearn'
         runs-on: ubuntu-latest
         steps:
         -   uses: actions/checkout@v3
@@ -34,7 +34,7 @@ jobs:
         needs: validate_cff
     # This prevents this workflow from running on a fork.
     # To test this workflow on a fork, uncomment the following line.
-        if: github.repository == 'nilearn/nilearn'
+        if: github.repository == 'ymzayek/nilearn'
         runs-on: ubuntu-latest
         timeout-minutes: 360
         env:
@@ -273,6 +273,15 @@ jobs:
                     nilearn_data/spm_multimodal_fmri
                 key: v1-spm_multimodal_fmri-${{ hashFiles('week_num') }}
 
+      # Cache the doc build html to be used by trigger-hosting workflow.
+        -   name: Cache docs
+            uses: actions/cache@v3
+            with:
+                path: |
+                    doc/_build/html
+                    doc/logs
+                key: doc-cache-${{ runner.os }}-${{ github.run_id }}
+
       # Update the authors file and the names file
       # in case a contributor has been added to citation.cff
       # but did not run the maint_tools/citation_cff_maint.py script.
@@ -297,17 +306,22 @@ jobs:
             run: |
                 Xvfb -ac :99 -screen 0 1280x1024x16 > /dev/null 2>&1 &
         -   name: Build docs
+            id: build
+            continue-on-error: true
             run: |
                 source activate testenv
                 echo "Conda active env = $CONDA_DEFAULT_ENV";
                 cd doc;
                 set -o pipefail;
                 PATTERN=$(cat ../pattern.txt) make $(cat ../build.txt) 2>&1 | tee log.txt;
-        -   name: Upload documentation
-            uses: actions/upload-artifact@v3
-            with:
-                name: doc
-                path: doc/_build/html
+        -   name: Set build status
+            run: |
+                mkdir doc/logs
+                if [[ ${{steps.build.outcome}} == "success" ]]; then 
+                    echo "success" | tee doc/logs/status.txt
+                else
+                    echo "failure" | tee doc/logs/status.txt
+                fi
         -   name: Note about build
             run: |
                 if [[ "$(cat build.txt)" != "html-strict" ]]; then

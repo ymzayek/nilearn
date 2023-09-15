@@ -9,12 +9,39 @@ on:
         -   completed
 
 jobs:
+    upload:
+        runs-on: ubuntu-latest
+        if: github.repository == 'ymzayek/nilearn'
+        defaults:
+            run:
+                shell: bash -el {0}
+        outputs:
+            status: ${{ steps.get-status.outputs.STATUS }}
+        steps:
+        -   name: Restore cached docs
+            id: cache-docs
+            uses: actions/cache@v3
+            with:
+                path: |
+                    doc/_build/html
+                    doc/logs
+                key: doc-cache-${{ runner.os }}-${{ github.event.workflow_run.id }}
+
+        -   name: Get build status
+            id: get-status
+            run: echo "STATUS=$(cat doc/logs/status.txt)" | tee "$GITHUB_OUTPUT"
+
+        -   name: Upload documentation
+            if: ${{ steps.cache-docs.outputs.cache-hit == 'true' }}
+            uses: actions/upload-artifact@v3
+            with:
+                name: doc
+                path: doc/_build/html
+
     push:
-        runs-on: ubuntu-20.04
-    # Run the job only if the "Documentation builder" workflow succeeded
-    # Prevents this workflow from running on a fork.
-    # To test this workflow on a fork remove the `github.repository == nilearn/nilearn` condition
-        if: github.repository == 'nilearn/nilearn' && github.event.workflow_run.conclusion == 'success'
+        needs: upload
+        runs-on: ubuntu-latest
+        if: github.repository == 'ymzayek/nilearn'
         steps:
         -   name: Checkout nilearn
             uses: actions/checkout@v3
@@ -22,10 +49,11 @@ jobs:
         -   name: Trigger hosting jobs
             run: bash build_tools/github/trigger_hosting.sh
             env:
-                CIRCLE_CI_TOKEN: ${{ secrets.CIRCLE_CI_TOKEN }}
+                CIRCLE_CI_TOKEN: ${{ secrets.CIRCLE_CI_TOKEN_TEMP }}
                 EVENT: ${{ github.event.workflow_run.event }}
-                RUN_ID: ${{ github.event.workflow_run.id }}
+                RUN_ID: ${{ github.run_id }}
                 HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
                 COMMIT_SHA: ${{ github.event.workflow_run.head_sha }}
                 REPO_NAME: ${{ github.event.workflow_run.head_repository.full_name }}
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                STATUS: ${{ needs.upload.outputs.status }}

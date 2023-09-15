@@ -3,7 +3,7 @@
 GITLOG=$(cat gitlog.txt)
 if [ "$GITHUB_REF_NAME" == "main" ] || [[ $GITLOG == *"[full doc]"* ]]; then
     echo "Doing a full build";
-    echo html-strict > build.txt;
+    echo html-noplot > build.txt;
 else
     if [[ $GITLOG == *"[example]"* ]]; then
         echo "Building selected example";
