@@ -47,7 +47,7 @@ jobs:
                     if [[ "$STATUS" == "success" ]]; then
                         echo "Mocking deployment..."
                     else
-                        echo "Failed to deploy because doc build status is "failure"
+                        echo "Failed to deploy because doc build status is 'failure'"
                         exit 1
                     fi
 
