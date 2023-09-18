@@ -12,8 +12,6 @@ on:
     pull_request:
         branches:
         -   '*'
-    schedule:
-    -   cron: 0 6 * * *
 
 jobs:
 
@@ -273,15 +271,6 @@ jobs:
                     nilearn_data/spm_multimodal_fmri
                 key: v1-spm_multimodal_fmri-${{ hashFiles('week_num') }}
 
-      # Cache the doc build html to be used by trigger-hosting workflow.
-        -   name: Cache docs
-            uses: actions/cache@v3
-            with:
-                path: |
-                    doc/_build/html
-                    doc/logs
-                key: doc-cache-${{ runner.os }}-${{ github.run_id }}
-
       # Update the authors file and the names file
       # in case a contributor has been added to citation.cff
       # but did not run the maint_tools/citation_cff_maint.py script.
@@ -307,7 +296,6 @@ jobs:
                 Xvfb -ac :99 -screen 0 1280x1024x16 > /dev/null 2>&1 &
         -   name: Build docs
             id: build
-            continue-on-error: true
             run: |
                 source activate testenv
                 echo "Conda active env = $CONDA_DEFAULT_ENV";
@@ -315,6 +303,7 @@ jobs:
                 set -o pipefail;
                 PATTERN=$(cat ../pattern.txt) make $(cat ../build.txt) 2>&1 | tee log.txt;
         -   name: Set build status
+            if: always()
             run: |
                 mkdir doc/logs
                 if [[ ${{steps.build.outcome}} == "success" ]]; then 
@@ -322,7 +311,17 @@ jobs:
                 else
                     echo "failure" | tee doc/logs/status.txt
                 fi
+            # Cache the doc build html to be used by trigger-hosting workflow.
+        -   name: Cache docs
+            if: always()
+            uses: actions/cache/save@v3
+            with:
+                path: |
+                    doc/_build/html
+                    doc/logs
+                key: doc-cache-${{ runner.os }}-${{ github.run_id }}
         -   name: Note about build
+            if: always()
             run: |
                 if [[ "$(cat build.txt)" != "html-strict" ]]; then
                     echo "Partial build : No data is downloaded or cached";
