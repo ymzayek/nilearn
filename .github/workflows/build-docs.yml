@@ -302,23 +302,12 @@ jobs:
                 cd doc;
                 set -o pipefail;
                 PATTERN=$(cat ../pattern.txt) make $(cat ../build.txt) 2>&1 | tee log.txt;
-        -   name: Set build status
-            if: always()
-            run: |
-                mkdir doc/logs
-                if [[ ${{steps.build.outcome}} == "success" ]]; then 
-                    echo "success" | tee doc/logs/status.txt
-                else
-                    echo "failure" | tee doc/logs/status.txt
-                fi
             # Cache the doc build html to be used by trigger-hosting workflow.
         -   name: Cache docs
             if: always()
             uses: actions/cache/save@v3
             with:
-                path: |
-                    doc/_build/html
-                    doc/logs
+                path: doc/_build/html
                 key: doc-cache-${{ runner.os }}-${{ github.run_id }}
         -   name: Note about build
             if: always()

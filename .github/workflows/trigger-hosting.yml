@@ -15,8 +15,6 @@ jobs:
         defaults:
             run:
                 shell: bash -el {0}
-        outputs:
-            status: ${{ steps.get-status.outputs.STATUS }}
         steps:
         -   name: Restore cached docs
             id: cache-docs
@@ -24,12 +22,7 @@ jobs:
             with:
                 path: |
                     doc/_build/html
-                    doc/logs
                 key: doc-cache-${{ runner.os }}-${{ github.event.workflow_run.id }}
-
-        -   name: Get build status
-            id: get-status
-            run: echo "STATUS=$(cat doc/logs/status.txt)" | tee "$GITHUB_OUTPUT"
 
         -   name: Upload documentation
             if: ${{ steps.cache-docs.outputs.cache-hit == 'true' }}
@@ -56,4 +49,4 @@ jobs:
                 COMMIT_SHA: ${{ github.event.workflow_run.head_sha }}
                 REPO_NAME: ${{ github.event.workflow_run.head_repository.full_name }}
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                STATUS: ${{ needs.upload.outputs.status }}
+                STATUS: ${{ github.event.workflow_run.conclusion }}
