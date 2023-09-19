@@ -9,30 +9,7 @@ on:
         -   completed
 
 jobs:
-    upload:
-        runs-on: ubuntu-latest
-        if: github.repository == 'ymzayek/nilearn'
-        defaults:
-            run:
-                shell: bash -el {0}
-        steps:
-        -   name: Restore cached docs
-            id: cache-docs
-            uses: actions/cache@v3
-            with:
-                path: |
-                    doc/_build/html
-                key: doc-cache-${{ runner.os }}-${{ github.event.workflow_run.id }}
-
-        -   name: Upload documentation
-            if: ${{ steps.cache-docs.outputs.cache-hit == 'true' }}
-            uses: actions/upload-artifact@v3
-            with:
-                name: doc
-                path: doc/_build/html
-
     push:
-        needs: upload
         runs-on: ubuntu-latest
         if: github.repository == 'ymzayek/nilearn'
         steps:

@@ -303,12 +303,12 @@ jobs:
                 set -o pipefail;
                 PATTERN=$(cat ../pattern.txt) make $(cat ../build.txt) 2>&1 | tee log.txt;
             # Cache the doc build html to be used by trigger-hosting workflow.
-        -   name: Cache docs
+        -   name: Upload documentation
             if: always()
-            uses: actions/cache/save@v3
+            uses: actions/upload-artifact@v3
             with:
+                name: doc
                 path: doc/_build/html
-                key: doc-cache-${{ runner.os }}-${{ github.run_id }}
         -   name: Note about build
             if: always()
             run: |
