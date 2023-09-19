@@ -60,7 +60,7 @@ jobs:
             run: |
                 set -x
                 if ! git remote -v | grep upstream; then
-                  git remote add upstream https://github.com/nilearn/nilearn.git
+                  git remote add upstream https://github.com/ymzayek/nilearn.git
                 fi
                 git fetch upstream
         -   name: Merge with upstream
