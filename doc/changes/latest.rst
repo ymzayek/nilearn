@@ -51,7 +51,7 @@ Enhancements
 
 - Add ``LassoCV`` as a new estimator option for Decoder objects (:gh: `3781` by `Michelle Wang`_)
 
-- Add ``vmin`` and ``symmetric_cbar`` arguments to :func:`~nilearn.plotting.plot_img_on_surf` (:gh:`3873` by `Michelle Wang`_).
+- Add ``vmin`` and ``symmetric_cbar`` arguments to :func:`.plot_img_on_surf` (:gh:`3873` by `Michelle Wang`_).
 
 - Improve ``generate_report`` method of maskers by allowing users to pass a cmap argument for plotting image (:gh:`3897` by `Yasmin Mzayek`_)
 
